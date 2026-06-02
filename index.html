@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fizyka dla Bystrzaków – Portal Edukacyjny</title>
+    <style>
+        /* Reset i style ogólne */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f8ff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Nagłówek i Nawigacja */
+        header {
+            background: linear-gradient(135deg, #4a90e2, #50e3c2);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        nav {
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #50e3c2;
+            color: #333;
+        }
+
+        /* Główny kontener */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* Sekcja powitalna */
+        .hero {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .hero h2 {
+            color: #4a90e2;
+            margin-bottom: 15px;
+        }
+
+        /* Karty z tematami lekcji i ciekawostkami */
+        .topics-grid, .funfacts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            padding: 15px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .bg-dynamika { background-color: #ff6b6b; }
+        .bg-optyka { background-color: #feca57; }
+        .bg-elektrycznosc { background-color: #1dd1a1; }
+        .bg-ciekawostka { background-color: #9b5de5; }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-body ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .card-body li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .card-body li::before {
+            content: "⚡";
+            position: absolute;
+            left: 0;
+        }
+
+        /* Sekcja Quizu i Sekcja Wideo */
+        .quiz-section, .video-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+
+        .quiz-section h2, .video-section h2 {
+            color: #4a90e2;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .question {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #222;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-answer {
+            background-color: #f0f0f0;
+            border: 2px solid #ddd;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .btn-answer:hover {
+            background-color: #e0e0e0;
+            border-color: #bbb;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #357abd;
+        }
+
+        #quiz-result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #quiz-progress {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+
+        /* Responsywny kontener na wideo (zachowuje proporcje 16:9) */
+        .video-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* Proporcje 16:9 */
+            padding-top: 30px; 
+            height: 0; 
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Stopka */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+
+        /* Responsywność */
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            nav { flex-direction: column; text-align: center; }
+            nav a { border-bottom: 1px solid #444; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 tag="lubiepanamalarczyka">Fizyka dla Sigmuszek 🌟</h1>
+        <p>Odkrywaj tajemnice wszechświata poprzez zabawę i eksperymenty!</p>
+    </header>
+
+    <nav>
+        <a href="#lekcje">Lekcje</a>
+        <a href="#quiz">Sprawdź się (Quiz)</a>
+        <a href="#wideo">Filmy Naukowe</a>
+        <a href="#ciekawostki">Ciekawostki</a>
+    </nav>
+
+    <div class="container">
+
+        <section class="hero">
+            <h2>Witaj Młody Odkrywco! 👋</h2>
+            <p>Czy zastanawiałeś się kiedyś, dlaczego jabłko spada z drzewa, jak powstaje tęcza albo skąd bierze się prąd w gniazdku? Fizyka to nauka, która odpowiada na te wszystkie pytania! Wybierz interesujący Cię temat i zacznij przygodę.</p>
+        </section>
+	<section id="wideo" class="video-section">
+            <p style="text-align: center; margin-bottom: 20px; color: #555; font-weight: bold; font-size: 1.2rem;">🌟 Hiroszima: 🌟</p>
+            <div class="video-wrapper" style="text-align: center; max-width: 500px;"> <img src="kaboom.gif" alt="Animacja przedstawiająca eksperyment fizyczny" style="width: 90%; max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            </div>
+        </section>
+
+
+        <section id="lekcje" style="padding-top: 20px;">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #333;">📚 Nasze Tematy Lekcji</h2>
+            
+            <div class="topics-grid">
+                <div class="card">
+                    <div class="card-header bg-dynamika">🚀 Siły i Ruch (Dynamika)</div>
+                    <div class="card-body">
+                        <p>Dowiedz się, dlaczego przedmioty się ruszają i czym są słynne zasady dynamiki Newtona!</p>
+                        <br>
+                        <ul>
+                            <li><strong>Grawitacja:</strong> Siła, która trzyma nas na Ziemi.</li>
+                            <li><strong>Tarcie:</strong> Dlaczego trudno utrzymać się na lodzie?</li>
+                            <li><strong>Prędkość:</strong> Jak szybko poruszają się zwierzęta i pojazdy?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-optyka">🌈 Światło i Kolory (Optyka)</div>
+                    <div class="card-body">
+                        <p>Światło skrywa w sobie mnóstwo niespodzianek. Zobacz, jak oszukuje ono nasze oczy!</p>
+                        <br>
+                        <ul>
+                            <li><strong>Powstanie tęczy:</strong> Jak krople wody rozszczepiają światło.</li>
+                            <li><strong>Lustra i soczewki:</strong> Jak działa lupa i okulary?</li>
+                            <li><strong>Cień i półcień:</strong> Dlaczego słońce tworzy ciemne kształty?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-elektrycznosc">⚡ Prąd i Magnesy</div>
+                    <div class="card-body">
+                        <p>Niewidzialna energia, która rządzi współczesnym światem. Poznaj jej sekrety!</p>
+                        <br>
+                        <ul>
+                            <li><strong>Elektryczność statyczna:</strong> Dlaczego balonik przykleja się do swetra?</li>
+                            <li><strong>Obwód elektryczny:</strong> Jak płynie prąd, by zapalić żarówkę?</li>
+                            <li><strong>Pole magnetyczne:</strong> Jak działa kompas i dlaczego magnes przyciąga żelazo?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz" class="quiz-section">
+            <h2>🧠 Wielki Quiz Fizyczny</h2>
+            <div class="quiz-container">
+                <div id="quiz-progress">Pytanie 1 z 6</div>
+                <div id="quiz-box">
+                    <div class="question" id="question-text">Pytanie ładowane...</div>
+                    <div class="answers" id="answers-container">
+                        </div>
+                    <button class="btn-submit" id="submit-btn" onclick="handlesubmit()">Sprawdź odpowiedź! 🎯</button>
+                </div>
+                <div id="quiz-result"></div>
+            </div>
+        </section>
+
+        <section id="wideo" class="video-section">
+            <h2>🎬 Wideo-Laboratorium: Czym jest fizyka?</h2>
+            <p style="text-align: center; margin-bottom: 20px; color: #555;">Zobacz film edukacyjny wyjaśniający czym zajmuje się fizyka!</p>
+            <div class="video-wrapper">
+                <div class="video-container" style="padding-bottom: 0; height: auto;">
+                    <video controls style="width: 100%; display: block; border-radius: 12px;">
+                        <source src="wideofizyka.mp4" type="video/mp4">
+                        Twoja przeglądarka nie obsługuje odtwarzacza wideo.
+                    </video>
+                </div>
+            </div>
+        </section>
+	<section id="wideo" class="video-section">
+            <p style="text-align: center; margin-bottom: 20px; color: #555;">🌟 Ja robiący tę stronę: 🌟</p>
+            <div class="video-wrapper" style="text-align: center;">
+                <img src="otwartyheimer.gif" alt="Animacja przedstawiająca eksperyment fizyczny" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+            </div>
+        </section>
+
+        <section id="ciekawostki" style="padding-top: 20px;">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #333;">💡 Kosmiczne Ciekawostki Fizyczne</h2>
+            
+            <div class="funfacts-grid">
+                <div class="card">
+                    <div class="card-header bg-ciekawostka">⚡ Błyskawica vs Dźwięk</div>
+                    <div class="card-body">
+                        <p>Światło pędzi tak szybko, że potrafi okrążyć Ziemię ponad 7 razy w jedną sekundę! Dźwięk przy nim to ślimak – potrzebuje aż 3 sekund na przebycie 1 kilometra. Dlatego w trakcie burzy najpierw widzisz błysk, a dopiero po chwili słyszysz grzmot!</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-ciekawostka">🌌 W kosmosie nikt Cię nie usłyszy</div>
+                    <div class="card-body">
+                        <p>Dźwięk to tak naprawdę drgające powietrze. Ponieważ w przestrzeni kosmicznej panuje próżnia (nie ma tam powietrza), fale dźwiękowe nie mają w czym się poruszać. Nawet największy wybuch kosmiczny wydarzyłby się w całkowitej, absolutnej ciszy!</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-ciekawostka">💧 Diamentowy deszcz</div>
+                    <div class="card-body">
+                        <p>Na planetach takich jak Neptun i Uran panuje tak gigantyczne ciśnienie (wielka siła nacisku), że potrafi ono ścisnąć węgiel zawarty w atmosferze i zamienić go w prawdziwe diamenty. Naukowcy uważają, że mogą tam padać deszcze z drogocennych kamieni!</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-ciekawostka">🍎 Ile ważysz na Księżycu?</div>
+                    <div class="card-body">
+                        <p>Księysł jest mniejszy od Ziemi, dlatego jego siła grawitacji jest aż 6 razy słabsza. Jeśli na Ziemi ważysz 36 kg, to na Księżycu waga pokazałaby zaledwie 6 kg! Dzięki temu mógłbyś tam skakać wyżej niż najlepsi koszykarze NBA.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-ciekawostka">🐦 Ptaki na kablach wysokiego napięcia</div>
+                    <div class="card-body">
+                        <p>Zastanawiałeś się, dlaczego prąd nie razi ptaków siedzących na przewodach? Prąd elektryczny zawsze szuka najkrótszej i najłatwiejszej drogi do ziemi. Ponieważ ptak dotyka tylko jednego kabla i nie ma kontaktu z ziemią ani innym przewodem, prąd po prostu go 'mija', płynąc dalej przewodem.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-ciekawostka">🧊 Gorący lód?</div>
+                    <div class="card-body">
+                        <p>Fizyka potrafi zaskoczyć! Istnieje substancja zwana "suchym lodem" (zamrożony dwutlenek węgla), która ma temperaturę około -79°C. Kiedy położysz ją na stole, nie topi się w wodę, lecz od razu zamienia się w gęstą, białą mgłę. Proces ten nazywamy <strong>sublimacją</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Fizyka dla Bystrzaków. Stworzono z myślą o młodych naukowcach. 🚀</p>
+    </footer>
+
+    <script>
+        const quizData = [
+            {
+                question: "Co jest powodem tego, że rzucona piłka zawsze spada na ziemię?",
+                answers: { A: "Siła magnetyczna", B: "Siła grawitacji", C: "Siła tarcia powietrza" },
+                correct: "B",
+                hint: "Ta siła działa też na spadające z drzew jabłka!"
+            },
+            {
+                question: "[DYNAMIKA] Dlaczego podczas nagłego hamowania samochodu pasażerów 'rzuca' do przodu?",
+                answers: { A: "Przez zjawisko bezwładności", B: "Przez gwałtowny wzrost grawitacji", C: "Bo samochód zaczyna jechać do tyłu" },
+                correct: "A",
+                hint: "Ciało pasażera chce 'kontynuować' ruch, który wykonywało przed hamowaniem."
+            },
+            {
+                question: "[OPTYKA] Jakie zjawisko odpowiada za powstawanie pięknej, kolorowej tęczy na niebie?",
+                answers: { A: "Odbicie światła od chmur", B: "Rozszczepienie światła słonecznego w kroplach wody", C: "Spalanie się pyłków w atmosferze" },
+                correct: "B",
+                hint: "Białe światło słońca wpada do kropli deszczu i dzieli się na wszystkie kolory!"
+            },
+            {
+                question: "[OPTYKA] Kiedy patrzysz w zwykłe, płaskie lustro, twój obraz jest:",
+                answers: { A: "Odwrócony do góry nogami", B: "Pomniejszony dwukrotnie", C: "Taki sam, ale ma zamienioną stronę lewą z prawą" },
+                correct: "C",
+                hint: "Podnieś prawą rękę przed lustrem i zobacz, którą rękę podnosi twoje odbicie."
+            },
+            {
+                question: "[PRĄD] Który z tych materiałów NIE przewodzi prądu i jest dobrym izolatorem (np. chroni kable)?",
+                answers: { A: "Plastik", B: "Miedź", C: "Woda z solą" },
+                correct: "A",
+                hint: "Z tego materiału często robi się obudowy urządzeń elektrycznych i rączki śrubokrętów."
+            },
+            {
+                question: "[PRĄD i MAGNESY] Co się stanie, gdy zbliżysz do siebie dwa magnesy tymi samymi biegunami (np. północny do północnego)?",
+                answers: { A: "Zaczną się mocno przyciągać", B: "Będą się odpychać", C: "Magnesy stracą swoją moc" },
+                correct: "B",
+                hint: "Pamiętaj regułę: jednoimienne (takie same) bieguny robią sobie na przekór!"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let chosenAnswer = "";
+        let isShowingResult = false;
+
+        function loadQuestion() {
+            isShowingResult = false;
+            chosenAnswer = "";
+            
+            const currentData = quizData[currentQuestionIndex];
+            
+            document.getElementById('quiz-progress').innerText = `Pytanie ${currentQuestionIndex + 1} z ${quizData.length}`;
+            document.getElementById('question-text').innerText = currentData.question;
+            
+            const answersContainer = document.getElementById('answers-container');
+            answersContainer.innerHTML = "";
+            document.getElementById('quiz-result').innerText = "";
+            
+            for (let letter in currentData.answers) {
+                const btn = document.createElement('button');
+                btn.className = 'btn-answer';
+                btn.innerText = `${letter}) ${currentData.answers[letter]}`;
+                btn.onclick = function() { selectAnswer(this, letter); };
+                answersContainer.appendChild(btn);
+            }
+            
+            document.getElementById('submit-btn').innerText = "Sprawdź odpowiedź! 🎯";
+        }
+
+        function selectAnswer(button, letter) {
+            if (isShowingResult) return;
+
+            const buttons = document.querySelectorAll('.btn-answer');
+            buttons.forEach(btn => {
+                btn.style.backgroundColor = "#f0f0f0";
+                btn.style.borderColor = "#ddd";
+            });
+
+            button.style.backgroundColor = "#ffe066";
+            button.style.borderColor = "#f59f00";
+            chosenAnswer = letter;
+        }
+
+        function handlesubmit() {
+            const resultDiv = document.getElementById('quiz-result');
+            const currentData = quizData[currentQuestionIndex];
+
+            if (isShowingResult) {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < quizData.length) {
+                    loadQuestion();
+                } else {
+                    showFinalResult();
+                }
+                return;
+            }
+
+            if (chosenAnswer === "") {
+                resultDiv.innerHTML = "⚠️ Zaznacz najpierw jedną z odpowiedzi!";
+                resultDiv.style.color = "#e03131";
+                return;
+            }
+
+            isShowingResult = true;
+            if (chosenAnswer === currentData.correct) {
+                score++;
+                resultDiv.innerHTML = `🎉 Doskonale! To prawidłowa odpowiedź!`;
+                resultDiv.style.color = "#2b8a3e";
+            } else {
+                resultDiv.innerHTML = `❌ Blisko, ale to nie to. Poprawna odpowiedź to ${currentData.correct}. <br><small>${currentData.hint}</small>`;
+                resultDiv.style.color = "#c92a2a";
+            }
+
+            if (currentQuestionIndex < quizData.length - 1) {
+                document.getElementById('submit-btn').innerText = "Przejdź do następnego pytania ➡️";
+            } else {
+                document.getElementById('submit-btn').innerText = "Zobacz podsumowanie quizu 🏁";
+            }
+        }
+
+        function showFinalResult() {
+            document.getElementById('quiz-progress').innerText = "Koniec quizu!";
+            const quizBox = document.getElementById('quiz-box');
+            
+            let gratulacje = "";
+            if(score === quizData.length) gratulacje = "👑 Jesteś prawdziwym geniuszem fizyki! Idealny wynik!";
+            else if(score >= 4) gratulacje = "🚀 Świetny wynik! Masz ogromną wiedzę!";
+            else gratulacje = "👍 Dobra próba! Przeczytaj lekcje powyżej i spróbuj ponownie!";
+
+            quizBox.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <h3 style="font-size: 1.6rem; margin-bottom: 15px;">Twój wynik to: ${score} / ${quizData.length} punktów</h3>
+                    <p style="font-size: 1.2rem; color: #4a90e2; font-weight: bold;">${gratulacje}</p>
+                    <button class="btn-submit" style="margin-top: 30px; background-color: #2b8a3e;" onclick="location.reload()">Zagraj jeszcze raz! 🔄</button>
+                </div>
+            `;
+            document.getElementById('quiz-result').innerText = "";
+        }
+
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>
